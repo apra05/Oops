@@ -1,0 +1,49 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cctype>
+
+using namespace std;
+
+bool containsError(const string& line) {
+    size_t pos = line.find("error");
+    if (pos == string::npos) return false;
+    return true;
+}
+
+int main() {
+    string inputFilename = "logfile.txt";
+    string outputFilename = "error.txt";
+
+    ifstream inputFile(inputFilename);
+    ofstream outputFile(outputFilename);
+
+    if (!inputFile.is_open()) {
+        cerr << "Error opening input file: " << inputFilename << endl;
+        return 1;
+    }
+
+    if (!outputFile.is_open()) {
+        cerr << "Error opening output file: " << outputFilename << endl;
+        return 1;
+    }
+
+    string line;
+    while (getline(inputFile, line)) {
+        string lowerLine = line;
+        for (char &c : lowerLine) {
+            c = tolower(c);
+        }
+
+        if (lowerLine.find("error") != string::npos) {
+            outputFile << line << endl;
+        }
+    }
+
+    cout << "Processing complete. Error messages written to " << outputFilename << endl;
+
+    inputFile.close();
+    outputFile.close();
+
+    return 0;
+}
